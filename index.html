@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case Calculator</title>
+    <style>
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Case Calculator</h1>
+
+    <label for="caseInput">Case:</label>
+    <input type="number" id="caseInput" min="0" onkeydown="handleInputKeyDown(event, 'tiInput')">
+
+    <label for="tiInput">Ti:</label>
+    <input type="number" id="tiInput" min="0" onkeydown="handleInputKeyDown(event, 'hiInput')">
+
+    <label for="hiInput">Hi:</label>
+    <input type="number" id="hiInput" min="0" onkeydown="handleInputKeyDown(event, 'calculateButton', 'caseInput')">
+
+    <button onclick="calculate()">Calculate</button>
+
+    <h2>Outputs:</h2>
+
+    <label for="palletsOutput"></label>
+    <output id="palletsOutput"></output>
+
+
+    <script>
+        function calculate() {
+    // Get input values
+    var caseValue = parseInt(document.getElementById('caseInput').value, 10);
+    var tiValue = parseInt(document.getElementById('tiInput').value, 10);
+    var hiValue = parseInt(document.getElementById('hiInput').value, 10);
+
+    // Perform calculations
+    var layers = Math.floor(caseValue / tiValue);
+    var leftoverCases = caseValue - (layers * tiValue);
+    var pallets = Math.floor(layers / hiValue);
+    var layersOnPartialPallets = layers - (pallets * hiValue);
+    var partialpallets = (leftoverCases > 0 || layersOnPartialPallets > 0) ? 1 : 0;
+    var layerOrLayers = (layersOnPartialPallets === 1)? "layer" : "layers";
+    var CasesORcase = (leftoverCases == 1)? "Case" : "Cases";
+    var PalletsOrPallet = (pallets === 1)? "Pallet" : "Pallets";
+    // Display results
+    var palletsOutput = pallets + " Full " + PalletsOrPallet ;
+
+    if (partialpallets === 1) {
+        palletsOutput += " and " + "a" + " Partial pallet with " + layersOnPartialPallets +" "+ layerOrLayers +" and " + leftoverCases + " "+ CasesORcase + " on top";
+   }
+    
+     document.getElementById('palletsOutput').innerText = palletsOutput;
+   
+
+    console.log(layersOnPartialPallets , leftoverCases , layers, pallets );
+}
+
+        function handleInputKeyDown(event, nextInputId) {
+            if (event.key === 'Enter') {
+                if (nextInputId === 'calculateButton') {
+                    document.getElementById('caseInput').select();
+                    calculate();
+                   
+                    
+                } else {
+                    document.getElementById(nextInputId).select();
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>
+
+
