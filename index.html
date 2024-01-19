@@ -10,28 +10,64 @@
             display: block;
             margin-bottom: 5px;
         }
+#numberPad {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #f1f1f1;
+            padding: 15px;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        #numberPad button {
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+
     </style>
 </head>
 <body>
 
     <h1>Case Calculator</h1>
 
-    <label for="caseInput">Case:</label>
-    <input type="tel" id="caseInput" min="0" inputmode="numeric" onkeydown="handleInputKeyDown(event, 'tiInput')">
-
+   <label for="caseInput">Case:</label>
+    <input type="tel" id="caseInput" min="0" inputmode="numeric" onfocus="setActiveInput(this)" onblur="removeActiveInput(this)">
+    
     <label for="tiInput">Ti:</label>
-    <input type="number" id="tiInput" min="0" inputmode="numeric" onkeydown="handleInputKeyDown(event, 'hiInput')">
+    <input type="number" id="tiInput" min="0" inputmode="numeric" onfocus="setActiveInput(this)" onblur="removeActiveInput(this)">
 
     <label for="hiInput">Hi:</label>
-    <input type="number" id="hiInput" min="0" inputmode="numeric" onkeydown="handleInputKeyDown(event, 'calculateButton', 'caseInput')">
+    <input type="number" id="hiInput" min="0" inputmode="numeric" onfocus="setActiveInput(this)" onblur="removeActiveInput(this)">
 
     <button onclick="calculate()">Calculate</button>
-
     <h2>Outputs:</h2>
 
     <label for="palletsOutput"></label>
     <output id="palletsOutput"></output>
 
+      <div id="numberPad">
+    <button class="numberButton" type="button">1</button>
+    <button class="numberButton" type="button">2</button>
+    <button class="numberButton" type="button">3</button>
+    <button class="numberButton" type="button">4</button>
+    <button class="numberButton" type="button">5</button>
+    <button class="numberButton" type="button">6</button>
+    <button class="numberButton" type="button">7</button>
+    <button class="numberButton" type="button">8</button>
+    <button class="numberButton" type="button">9</button>
+    <button class="numberButton" type="button">0</button>
+    <button class="numberButton enterButton" type="button">Enter</button>
+
+</div>
+
+
+       
 
     <script>
 
@@ -88,9 +124,73 @@
                 }
             }
         }
+
+              var numberPad = document.getElementById('numberPad');
+    numberPad.addEventListener('mousedown', function (event) {
+        if (event.target.classList.contains('numberButton')) {
+            if (event.target.textContent === '.') {
+                appendToActiveInput(document.querySelector('.activeInput'), '.');
+            } else if (event.target.classList.contains('enterButton')) {
+                handleEnter();
+            } else {
+                appendToActiveInput(document.querySelector('.activeInput'), event.target.textContent);
+            }
+            event.preventDefault(); // Prevent the default button mousedown behavior
+        }
+    });
+
+        // Function to append a value to the specified input field
+        function appendToActiveInput(activeInput, value) {
+            if (activeInput) {
+                activeInput.value += value;
+            }
+        }
+          
+
+         function setActiveInput(input) {
+            input.classList.add('activeInput');
+        }
+
+        // Remove the activeInput class when the input loses focus
+        function removeActiveInput(input) {
+            input.classList.remove('activeInput');
+        }     
+
+  function handleEnter() {
+        var activeInput = document.querySelector('.activeInput');
+        if (activeInput) {
+         event.preventDefault();
+            if (activeInput.id === 'hiInput') {
+                document.getElementById('caseInput').select();
+                    calculate();
+                     document.getElementById('caseInput').value = "";
+                      document.getElementById('hiInput').value = "";
+                       document.getElementById('tiInput').value = "";
+            } else {
+                // Select the next input field
+                var nextInputId = getNextInputId(activeInput.id);
+                if (nextInputId) {
+                    document.getElementById(nextInputId).select();
+                }
+            }
+        }
+    }
+
+    // Function to get the next input field id
+    function getNextInputId(currentInputId) {
+        switch (currentInputId) {
+            case 'caseInput':
+                return 'tiInput';
+            case 'tiInput':
+                return 'hiInput';
+            default:
+                return null;
+        }
+    }
+
+
     </script>
 
 </body>
 </html>
-
 
