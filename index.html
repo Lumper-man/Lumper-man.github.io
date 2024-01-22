@@ -56,14 +56,37 @@
         
         
       .enterButton {
-    width: 500%; 
+    width: 35%; 
     padding: 15px;
-    font-size: 40px;
+    font-size: 30px;
     cursor: pointer;
     background-color: #4caf50;
     border: 1px solid;
     border-radius: 5px;
-    margin: 3px;
+    margin: 2px;
+}
+      
+      .backspaceButton {
+    width: 35%; 
+    padding: 15px;
+    font-size: 35px;
+    color: #c40e04;
+    cursor: pointer;
+    background-color: #474646;
+    border: 1px solid;
+    border-radius: 5px;
+    margin: 2px;
+}
+      
+        .zeroButton {
+    width: 35%; 
+    padding: 15px;
+    font-size: 40px;
+    cursor: pointer;
+    background-color: #3737ff;
+    border: 1px solid;
+    border-radius: 5px;
+    margin: 2px;
 }
 
 
@@ -84,6 +107,7 @@
     <input  id="hiInput" min="0" inputmode="none" onfocus="setActiveInput(this)" onblur="removeActiveInput(this)">
 
     <button onclick="calculate()">Calculate</button>
+    <button onclick="clearAll()">Clear</button>
     <h2>Outputs:</h2>
 
     <label for="palletsOutput"></label>
@@ -106,10 +130,15 @@
             <button class="numberButton" type="button">3</button>
         </div>
         <div class="numberRow">
-            <button class="numberButton" type="button">0</button>
+           <button class="numberButton backspaceButton" type"button">X</button>
+            <button class="numberButton zeroButton" type="button">0</button>
             <button class="numberButton enterButton" type="button">Enter</button>
+            
+                                                              
+                                                              
         </div>
     </div>
+
 
 
        
@@ -170,13 +199,27 @@
             }
         }
 
-              var numberPad = document.getElementById('numberPad');
+        function clearAll() { 
+
+console.log("can you see this")
+           
+                 document.getElementById('caseInput').select();
+                     document.getElementById('caseInput').value = "";
+                      document.getElementById('hiInput').value = "";
+                       document.getElementById('tiInput').value = "";
+
+                     }
+
+         // Event delegation for number pad buttons
+    var numberPad = document.getElementById('numberPad');
     numberPad.addEventListener('mousedown', function (event) {
         if (event.target.classList.contains('numberButton')) {
             if (event.target.textContent === '.') {
                 appendToActiveInput(document.querySelector('.activeInput'), '.');
             } else if (event.target.classList.contains('enterButton')) {
                 handleEnter();
+            } else if (event.target.classList.contains('backspaceButton')) {
+                handleBackspace();
             } else {
                 appendToActiveInput(document.querySelector('.activeInput'), event.target.textContent);
             }
@@ -232,6 +275,14 @@
                 return null;
         }
     }
+
+      function handleBackspace() {
+        var activeInput = document.querySelector('.activeInput');
+        if (activeInput) {
+            activeInput.value = activeInput.value.slice(0, -1); // Remove the          last character
+        }
+    }
+
 
 
     </script>
