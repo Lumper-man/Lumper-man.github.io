@@ -93,20 +93,20 @@
 
     </style>
 </head>
-<body>
-    
+<body
 
+    
 
     <h1>Case Calculator</h1>
 
    <label for="caseInput">Case:</label>
-    <input  id="caseInput" min="0" inputmode="none" onfocus="setActiveInput(this)" onblur="removeActiveInput(this)">
+    <input  id="caseInput" min="0" inputmode="none" onfocus="setActiveInput(this)" onblur="removeActiveInput(this)" onkeydown="handleInputKeyDown(event, 'tiInput')">
     
     <label for="tiInput">Ti:</label>
-    <input  id="tiInput" min="0" inputmode="none" onfocus="setActiveInput(this)" onblur="removeActiveInput(this)">
+    <input  id="tiInput" min="0" inputmode="none" onfocus="setActiveInput(this)" onblur="removeActiveInput(this)"onkeydown="handleInputKeyDown(event, 'tiInput')">
 
     <label for="hiInput">Hi:</label>
-    <input  id="hiInput" min="0" inputmode="none" onfocus="setActiveInput(this)" onblur="removeActiveInput(this)">
+    <input  id="hiInput" min="0" inputmode="none" onfocus="setActiveInput(this)" onblur="removeActiveInput(this)"onkeydown="handleInputKeyDown(event, 'tiInput')">
 
     <button onclick="calculate()">Calculate</button>
     <button onclick="clearAll()">Clear</button>
@@ -147,8 +147,11 @@
 
     <script>
 
+          var activeInput = document.querySelector('.activeInput');
+           
+
               window.onload = function() {
-               clearAll();
+               clearAll()
                   };
 
 
@@ -181,34 +184,41 @@
     console.log(layersOnPartialPallets , leftoverCases , layers, pallets );
 }
 
-        function handleInputKeyDown(event, nextInputId) {
-            if (event.key === 'Enter') {
-                if (nextInputId === 'calculateButton') {
-                    document.getElementById('caseInput').select();
-                    calculate();
-                     document.getElementById('caseInput').value = "";
-                      document.getElementById('hiInput').value = "";
-                       document.getElementById('tiInput').value = "";
+       function handleInputKeyDown(event, nextInputId) {
+               var currentInput = document.activeElement;
+    if (event.key === 'Enter' && currentInput && currentInput.value.length > 0){
+        
+         var activeInput = document.querySelector('.activeInput');
+        if (activeInput.id === 'hiInput') {
 
-                        
+            document.getElementById('caseInput').select();
+            calculate();
+            clearAll();
+        } else {
 
-
-                   
-                    
-                } else {
+           var nextInputId = getNextInputId(activeInput.id);
+                if (nextInputId) {
                     document.getElementById(nextInputId).select();
+                
                 }
-            }
-        }
+        
+
+}
+        event.preventDefault();
+    }
+}
+  
+
 
         function clearAll() { 
 
-console.log("can you see this")
+
            
                  document.getElementById('caseInput').select();
                      document.getElementById('caseInput').value = "";
                       document.getElementById('hiInput').value = "";
                        document.getElementById('tiInput').value = "";
+                  console.log("can you see this")
 
                      }
 
@@ -247,8 +257,9 @@ console.log("can you see this")
         }     
 
   function handleEnter() {
-        var activeInput = document.querySelector('.activeInput');
-        if (activeInput) {
+    var currentInput = document.activeElement;
+    var activeInput = document.querySelector('.activeInput');
+        if (activeInput && currentInput && currentInput.value.length > 0) {
          event.preventDefault();
             if (activeInput.id === 'hiInput') {
                 document.getElementById('caseInput').select();
