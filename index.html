@@ -222,22 +222,33 @@
 
                      }
 
-         // Event delegation for number pad buttons
-    var numberPad = document.getElementById('numberPad');
-    numberPad.addEventListener('mousedown', function (event) {
-        if (event.target.classList.contains('numberButton')) {
-            if (event.target.textContent === '.') {
-                appendToActiveInput(document.querySelector('.activeInput'), '.');
-            } else if (event.target.classList.contains('enterButton')) {
-                handleEnter();
-            } else if (event.target.classList.contains('backspaceButton')) {
-                handleBackspace();
-            } else {
-                appendToActiveInput(document.querySelector('.activeInput'), event.target.textContent);
-            }
-            event.preventDefault(); // Prevent the default button mousedown behavior
+      var numberPad = document.getElementById('numberPad');
+
+function handleButtonClick(event) {
+    if (event.target.classList.contains('numberButton')) {
+        if (event.target.textContent === '.') {
+            appendToActiveInput(document.querySelector('.activeInput'), '.');
+        } else if (event.target.classList.contains('enterButton')) {
+            handleEnter();
+        } else if (event.target.classList.contains('backspaceButton')) {
+            handleBackspace();
+        } else {
+            appendToActiveInput(document.querySelector('.activeInput'), event.target.textContent);
         }
-    });
+        event.preventDefault(); // Prevent the default button mousedown behavior
+    }
+}
+
+// Add event listener for 'mousedown'
+numberPad.addEventListener('mousedown', handleButtonClick);
+
+// Add event listener for 'touchstart'
+numberPad.addEventListener('touchstart', function (event) {
+    // Prevent the default touchstart behavior
+    event.preventDefault();
+    // Call the same function as for 'mousedown'
+    handleButtonClick(event);
+});
 
         // Function to append a value to the specified input field
         function appendToActiveInput(activeInput, value) {
