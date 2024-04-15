@@ -314,7 +314,11 @@ numberPad.addEventListener('touchstart', function (event) {
         $(input).removeClass('activeInput');
     }
 
-
+function appendToActiveInput(activeInput, value) {
+    if (activeInput) {
+        $(activeInput).val($(activeInput).val() + value);  
+	}
+}
 
   function handleEnter() {
     var currentInput = document.activeElement;
