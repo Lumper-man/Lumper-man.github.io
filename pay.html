@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1 , maximum-scale=1">
+    <title>Pay Calculator</title>
+    <style>
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+
+       #container {
+            position: relative;
+        }
+
+
+        }
+ #numberPad {
+            position: absolute;
+            bottom: 20;
+            left: 10%; /* Set left to 50% for centering */
+            transform: translateX(50%); /* TranslateX to center the number pad */
+            width: 200px; /* Adjust the width as needed */
+           // max-height: 55vh;
+           // background-color: #f1f1f1;
+            padding: 10px;
+            //box-shadow: 0 -2px 5px rgba(200, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+
+        }
+
+        .numberRow {
+            display: flex;
+            width: 170%;
+            //margin-bottom: 5px;
+            border-radius: 25px;
+            height: 90px;
+            margin: 0px;
+        }
+
+        .numberButton {
+            width: 200%;
+            justify-content: space-between;
+            padding: 20px;
+            font-size: 40px;
+            cursor: pointer;
+            background-color: #3737ff;
+            border: 1px solid;
+            border-radius: 5px;
+            margin: 2px;
+
+        }
+
+
+      .enterButton {
+    width: 35%;
+    padding: 15px;
+    font-size: 30px;
+    cursor: pointer;
+    background-color: #4caf50;
+    border: 1px solid;
+    border-radius: 5px;
+    margin: 2px;
+}
+
+      .backspaceButton {
+    width: 35%;
+    padding: 15px;
+    font-size: 35px;
+    color: #c40e04;
+    cursor: pointer;
+    background-color: #474646;
+    border: 1px solid;
+    border-radius: 5px;
+    margin: 2px;
+}
+
+        .zeroButton {
+    width: 35%;
+    padding: 15px;
+    font-size: 40px;
+    cursor: pointer;
+    background-color: #3737ff;
+    border: 1px solid;
+    border-radius: 5px;
+    margin: 2px;
+}
+
+#customInputModal {
+    display: block;
+    position: fixed;
+    top: -45%; /* Set to 0 to position it at the top of the viewport */
+    left: -50%;
+    background-color: grey;
+    padding: 20px;
+    border: 5px solid #b90000;
+    width: 200%;
+    height: 30%;
+    font-size: 25px;
+    color: #b90000;
+    padding-top:1px;
+    border-radius: 8px;
+}
+
+     .searchButton {
+    display: block;
+    position: fixed;
+    top: -70%; /* Set to 0 to position it at the top of the viewport */
+    left: 70%;
+    background-color: grey;
+    padding: 1px;
+    border: 5px solid #b90000;
+    width: 50%;
+    height: 10%;
+    font-size: 12px;
+    color: #b90000;
+    padding-top:1px;
+    border-radius: 8px;
+}
+
+
+
+
+    </style>
+</head>
+<body
+
+
+
+    <h1>Pay Calculator</h1>
+
+
+
+   <label for="EPR">Expected pay rate:</label>
+    <input  id="EPR" min="0" inputmode="none" onfocus="setActiveInput(this)" onblur="removeActiveInput(this)" onkeydown="handleInputKeyDown(event, 'APR')">
+
+    <label for="APR">Actual pay rate:</label>
+    <input  id="APR" min="0" inputmode="none" onfocus="setActiveInput(this)" onblur="removeActiveInput(this)"onkeydown="handleInputKeyDown(event, 'APR')">
+
+    <label for="Hours">Hours:</label>
+    <input  id="Hours" min="0" inputmode="none" onfocus="setActiveInput(this)" onblur="removeActiveInput(this)"onkeydown="handleInputKeyDown(event, 'APR')">
+
+    <button onclick="calculate()">Calculate</button>
+    <button onclick="clearAll()">Clear</button>
+
+
+<h2>Outputs:</h2>
+
+    <label for="palletsOutputs"></label>
+    <output id="palletsOutputs"></output>
+  <div id="resultContainer"></div> <!-- Added a container for displaying the result -->
+      <div id="numberPad">
+        <div class="numberRow">
+            <button class="numberButton" type="button">7</button>
+            <button class="numberButton" type="button">8</button>
+            <button class="numberButton" type="button">9</button>
+        </div>
+        <div class="numberRow">
+            <button class="numberButton" type="button">4</button>
+            <button class="numberButton" type="button">5</button>
+            <button class="numberButton" type="button">6</button>
+        </div>
+        <div class="numberRow">
+            <button class="numberButton" type="button">1</button>
+            <button class="numberButton" type="button">2</button>
+            <button class="numberButton" type="button">3</button>
+        </div>
+        <div class="numberRow">
+           <button class="numberButton backspaceButton" type"button">X</button>
+            <button class="numberButton zeroButton" type="button">0</button>
+            <button class="numberButton enterButton" type="button">Enter</button>
+
+
+
+        </div>
+
+    </div>
+
+
+
+
+
+    <script>
+
+          var activeInput = document.querySelector('.activeInput');
+
+
+              window.onload = function() {
+               clearAll()
+                  };
+
+function closeNextpo () {
+         var nextUpc = document.getElementById('nextPO').value;
+              document.getElementById('upcTwo').value = nextUpc;
+			   document.getElementById('customInputModal').style.display = 'none';
+               clearAll();
+
+}
+
+function openNextpo(){
+		 document.getElementById('customInputModal').style.display = 'block';
+		 document.getElementById('nextPO').focus();
+		 document.getElementById('nextPO').value = "";
+		 }
+
+
+
+        function calculate() {
+    // Get input values
+    var EPRVal = parseFloat(document.getElementById('EPR').value, 10);
+    var APRval = parseFloat(document.getElementById('APR').value, 10);
+    var Hoursval = parseFloat(document.getElementById('Hours').value, 10);
+
+    // Perform calculations
+    var eprPay = EPRVal * Hoursval
+    var aprPay = APRval * Hoursval
+	var pyD = eprPay - aprPay
+	var roundedPyD = pyD.toFixed(2);
+   
+    // Display results
+    var palletsOutputs = roundedPyD
+
+    
+     var palletsOutput = roundedPyD
+
+     document.getElementById('palletsOutputs').innerText = palletsOutputs;
+
+    console.log(eprPay , aprPay );
+ 
+}
+
+
+
+
+
+       function handleInputKeyDown(event, nextInputId) {
+               var currentInput = document.activeElement;
+    if (event.key === 'Enter' && currentInput && currentInput.value.length > 0){
+
+         var activeInput = document.querySelector('.activeInput');
+        if (activeInput.id === 'Hours') {
+
+            document.getElementById('EPR').select();
+            calculate();
+           
+        } else {
+
+           var nextInputId = getNextInputId(activeInput.id);
+                if (nextInputId) {
+                    document.getElementById(nextInputId).select();
+
+                }
+
+
+}
+        event.preventDefault();
+    }
+}
+
+
+
+        function clearAll() {
+                    document.getElementById('EPR').select();
+                     document.getElementById('EPR').value = "";
+                      document.getElementById('Hours').value = "";
+                       document.getElementById('APR').value = "";
+                        console.log("can you see this")
+
+                     }
+
+      var numberPad = document.getElementById('numberPad');
+
+function handleButtonClick(event) {
+    if (event.target.classList.contains('numberButton')) {
+        if (event.target.textContent === '.') {
+            appendToActiveInput(document.querySelector('.activeInput'), '.');
+        } else if (event.target.classList.contains('enterButton')) {
+            handleEnter();
+        } else if (event.target.classList.contains('backspaceButton')) {
+            handleBackspace();
+        } else {
+            appendToActiveInput(document.querySelector('.activeInput'), event.target.textContent);
+        }
+        event.preventDefault(); // Prevent the default button mousedown behavior
+    }
+}
+
+// Add event listener for 'mousedown'
+numberPad.addEventListener('mousedown', handleButtonClick);
+
+// Add event listener for 'touchstart'
+numberPad.addEventListener('touchstart', function (event) {
+    // Prevent the default touchstart behavior
+    event.preventDefault();
+    // Call the same function as for 'mousedown'
+    handleButtonClick(event);
+});
+
+        // Function to append a value to the specified input field
+
+   
+
+
+    function setActiveInput(input) {
+        $(input).addClass('activeInput');
+    }
+
+    // Remove the activeInput class when the input loses focus
+    function removeActiveInput(input) {
+        $(input).removeClass('activeInput');
+    }
+
+
+
+  function handleEnter() {
+    var currentInput = document.activeElement;
+    var activeInput = document.querySelector('.activeInput');
+        if (activeInput && currentInput && currentInput.value.length > 0) {
+         event.preventDefault();
+            if (activeInput.id === 'Hours') {
+                document.getElementById('EPR').select();
+                    calculate();
+                     document.getElementById('EPR').value = "";
+                      document.getElementById('Hours').value = "";
+                       document.getElementById('APR').value = "";
+            } else {
+                // Select the next input field
+                var nextInputId = getNextInputId(activeInput.id);
+                if (nextInputId) {
+                    document.getElementById(nextInputId).select();
+                }
+            }
+        }
+    }
+
+    // Function to get the next input field id
+    function getNextInputId(currentInputId) {
+        switch (currentInputId) {
+            case 'EPR':
+                return 'APR';
+            case 'APR':
+                return 'Hours';
+            default:
+                return null;
+        }
+    }
+
+      function handleBackspace() {
+        var activeInput = document.querySelector('.activeInput');
+        if (activeInput) {
+            activeInput.value = activeInput.value.slice(0, -1); // Remove the          last character
+        }
+    }
+
+
+
+    </script>
+
+</body>
+</html>
