@@ -19,11 +19,11 @@
         }
  #numberPad {
             position: absolute;
-            bottom: 20;
+            bottom: 30;
             left: 10%; /* Set left to 50% for centering */
             transform: translateX(50%); /* TranslateX to center the number pad */
             width: 200px; /* Adjust the width as needed */
-           // max-height: 55vh;
+           // max-height: 40vh;
            // background-color: #f1f1f1;
             padding: 10px;
             //box-shadow: 0 -2px 5px rgba(200, 0, 0, 0.1);
@@ -35,10 +35,10 @@
 
         .numberRow {
             display: flex;
-            width: 170%;
+            width: 150%;
             //margin-bottom: 5px;
             border-radius: 25px;
-            height: 90px;
+            height: 70px;
             margin: 0px;
         }
 
@@ -57,7 +57,8 @@
 
 
       .enterButton {
-    width: 35%;
+    width: 32%;
+	height: 195%;
     padding: 15px;
     font-size: 30px;
     cursor: pointer;
@@ -68,7 +69,7 @@
 }
 
       .backspaceButton {
-    width: 35%;
+    width: 65%;
     padding: 15px;
     font-size: 35px;
     color: #c40e04;
@@ -80,6 +81,17 @@
 }
 
         .zeroButton {
+    width: 35%;
+    padding: 15px;
+    font-size: 40px;
+    cursor: pointer;
+    background-color: #3737ff;
+    border: 1px solid;
+    border-radius: 5px;
+    margin: 2px;
+}
+
+      .decimalButton {
     width: 35%;
     padding: 15px;
     font-size: 40px;
@@ -170,13 +182,13 @@
             <button class="numberButton" type="button">3</button>
         </div>
         <div class="numberRow">
-           <button class="numberButton backspaceButton" type"button">X</button>
+           <button class="numberButton decimalButton" type="button">.</button>
             <button class="numberButton zeroButton" type="button">0</button>
             <button class="numberButton enterButton" type="button">Enter</button>
-
-
-
         </div>
+        <div class="numberRow">
+		<button class="numberButton backspaceButton" type="button">X</button>
+		</div>
 
     </div>
 
@@ -193,19 +205,7 @@
                clearAll()
                   };
 
-function closeNextpo () {
-         var nextUpc = document.getElementById('nextPO').value;
-              document.getElementById('upcTwo').value = nextUpc;
-			   document.getElementById('customInputModal').style.display = 'none';
-               clearAll();
 
-}
-
-function openNextpo(){
-		 document.getElementById('customInputModal').style.display = 'block';
-		 document.getElementById('nextPO').focus();
-		 document.getElementById('nextPO').value = "";
-		 }
 
 
 
@@ -328,9 +328,7 @@ function appendToActiveInput(activeInput, value) {
             if (activeInput.id === 'Hours') {
                 document.getElementById('EPR').select();
                     calculate();
-                     document.getElementById('EPR').value = "";
-                      document.getElementById('Hours').value = "";
-                       document.getElementById('APR').value = "";
+                   
             } else {
                 // Select the next input field
                 var nextInputId = getNextInputId(activeInput.id);
